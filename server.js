@@ -21,9 +21,6 @@ var PORT = 3000;
 // Require all models
 // var db = require("./models");
 
-var MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/mongoHeadlines'
-
-mongoose.connect(MONGODB_URI)
 var app = express();
 
 
@@ -35,6 +32,9 @@ app.use(express.json());
 app.use(express.static("public"));
 
 
+var MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/mongoHeadlines'
+
+mongoose.connect(MONGODB_URI)
 
 
 ///////////////////////////////////
