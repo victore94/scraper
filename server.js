@@ -3,25 +3,22 @@ var express = require("express");
 var mongojs = require("mongojs");
 var axios = require("axios");
 var cheerio = require("cheerio");
+var logger = require("morgan");
+var mongoose = require("mongoose");
+
 
 
 var app = express();
 
-app.use(express.static("public"));
 
 
 var databaseUrl = "scraper";
 var collections = ["scrapeAnime"];
 /////////////////////////////////
-var logger = require("morgan");
-var mongoose = require("mongoose");
+
 
 var PORT = 3000;
 
-// Require all models
-// var db = require("./models");
-
-var app = express();
 
 
 app.use(logger("dev"));
@@ -68,21 +65,12 @@ app.get("/reset", function (req, res) {
 });
 
 
-
-
-
 app.get("/anime/:id", function (req, res) {
-    // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
-    db.Article.findOne({ _id: req.params.id })
-        // ..and populate all of the notes associated with it
-        .then(function (dbArticle) {
-            // If we were able to successfully find an Article with the given id, send it back to the client
-            res.json(dbArticle);
-        })
-        .catch(function (err) {
-            // If an error occurred, send it to the client
-            res.json(err);
-        });
+    db.scrapeAnime.findOne({ _id: req.params.id }).then(function (data) {
+        res.json(data);
+    }).catch(function (err) {
+        res.json(err);
+    });
 });
 
 app.get("/scrape", function (req, res) {
