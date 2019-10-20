@@ -1,22 +1,36 @@
-const displayResults = (res) => {
+function displayResults(scrapeAnime) {
     // First, empty the table
     $("#anime").empty();
 
     // Then, for each entry of that json...
-    res.forEach(function (anime) {
+    scrapeAnime.forEach(function (data) {
+        let anime = data.newAnime
+
         // Append each of the anime's properties to the table
         var tr = $("<tr>").append(
-            $("<td>").text(anime.name),
-            $("<td>").text(anime.story),
-            $("<td>").text(anime.img),
-            $("<td>").text(anime.link),
+            $("<td>").text(anime.title),
+            $("<td>").append(`<img src="${anime.poster}"/>`),
+            $("<td>").prepend(`<div><a href="${anime.link}">Link</a></div>`),
+            $("<td>").text(anime.story)
         );
 
         $("#anime").append(tr);
     });
 }
 
-$.getJSON("/anime", function (data) {
+
+$('#reset').on('click', () => {
+    $.get("/reset", function (req, res) {
+        db.scrapeAnime.drop()
+        res.send("reset");
+    });
+
+})
+
+
+
+
+$.getJSON("/all", function (data) {
     // Call our function to generate a table body
     displayResults(data);
 });

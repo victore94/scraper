@@ -6,31 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Scraper</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+        integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 </head>
 
 <body>
 
-    <h1>Testing</h1>
 
-    <h3 class="header"> Frontend</h3>
+    <h3 class="header"> Kiss</h3>
 
-    <table id="results">
+    <button id="scrape">Scrape</button>
+    <button id="reset">Reset</button>
+
+    <table class="responsive-table" id="results">
         <thead>
-            <tr>
+            <tr class="responsive-table">
                 <th id="anime-name">Name</th>
-                <th id="anime-story">Story</th>
                 <th id="anime-image">image</th>
                 <th id="anime-link">link</th>
-                <th id="anime-new-name">But I'd Call It...</th>
+                <th id="anime-story">Story</th>
             </tr>
         </thead>
-        <div id="anime"></div>
+    </table>
+
+    <div id="anime"></div>
 
 
 
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-        <script src="app.js"></script>
+    <script src="./app.js"></script>
 
 </body>
 

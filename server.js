@@ -12,9 +12,34 @@ app.use(express.static("public"));
 
 var databaseUrl = "scraper";
 var collections = ["scrapeAnime"];
+/////////////////////////////////
+var logger = require("morgan");
+var mongoose = require("mongoose");
+
+var PORT = 3000;
+
+// Require all models
+// var db = require("./models");
+
+
+var app = express();
+
+
+app.use(logger("dev"));
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use(express.static("public"));
+
+mongoose.connect("mongodb://localhost/populate", { useNewUrlParser: true });
+
+
+///////////////////////////////////
 
 
 var db = mongojs(databaseUrl, collections);
+
 db.on("error", function (error) {
     console.log("Database Error:", error);
 });
@@ -24,14 +49,7 @@ app.get("/", function (req, res) {
     res.send("Hello world");
 });
 
-app.get("/reset", function (req, res) {
-    db.scrapeAnime.drop()
-    res.send("reset");
-});
-
-
-
-app.get("/anime", function (req, res) {
+app.get("/all", function (req, res) {
     db.scrapeAnime.find({}, function (err, found) {
         if (err) {
             console.log(err);
@@ -41,6 +59,15 @@ app.get("/anime", function (req, res) {
         }
     });
 })
+
+app.get("/reset", function (req, res) {
+    db.scrapeAnime.drop()
+    res.send("reset");
+});
+
+
+
+
 
 app.get("/anime/:id", function (req, res) {
     // Using the id passed in the id parameter, prepare a query that finds the matching one in our db...
@@ -83,6 +110,6 @@ app.get("/scrape", function (req, res) {
     res.send("Scrape Complete");
 });
 
-app.listen(3000, function () {
+app.listen(PORT, function () {
     console.log("App running on port 3000!");
 });
