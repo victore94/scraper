@@ -7,6 +7,7 @@ var logger = require("morgan");
 var mongoose = require("mongoose");
 
 
+var PORT = process.env.PORT || 3000;
 
 var app = express();
 
@@ -17,7 +18,6 @@ var collections = ["scrapeAnime"];
 /////////////////////////////////
 
 
-var PORT = process.env.PORT || 3000;
 
 
 
