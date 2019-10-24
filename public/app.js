@@ -24,10 +24,7 @@ $('#reset').on('click', () => {
         db.scrapeAnime.drop()
         res.send("reset");
     });
-
 })
-
-
 
 
 $.getJSON("/all", function (data) {
