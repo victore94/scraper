@@ -1,47 +1,75 @@
 
+// var express = require("express");
+// var mongojs = require("mongojs");
+// var axios = require("axios");
+// var cheerio = require("cheerio");
+// var logger = require("morgan");
+// var mongoose = require("mongoose");
+
+
+
+// var PORT = process.env.PORT || 3000;
+// var app = express();
+
+
+
+// var databaseUrl = "scraper";
+// var collections = ["scrapeAnime"];
+// /////////////////////////////////
+
+
+
+
+
+// app.use(logger("dev"));
+
+// app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+
+// app.use(express.static("public"));
+
+
+// var MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/mongoHeadlines'
+
+// mongoose.connect(MONGODB_URI)
+
+
+// var db = mongojs(databaseUrl, collections);
+///////////////////////////////////
+
 var express = require("express");
-var mongojs = require("mongojs");
-var axios = require("axios");
-var cheerio = require("cheerio");
 var logger = require("morgan");
 var mongoose = require("mongoose");
 
+// Our scraping tools
+// Axios is a promised-based http library, similar to jQuery's Ajax method
+// It works on the client and on the server
+var axios = require("axios");
+var cheerio = require("cheerio");
 
+// Require all models
+var db = require("./models");
 
-var PORT = process.env.PORT || 3000;
+var PORT = 3000;
+
+// Initialize Express
 var app = express();
 
+// Configure middleware
 
-
-var databaseUrl = "scraper";
-var collections = ["scrapeAnime"];
-/////////////////////////////////
-
-
-
-
-
+// Use morgan logger for logging requests
 app.use(logger("dev"));
-
+// Parse request body as JSON
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
+// Make public a static folder
 app.use(express.static("public"));
 
-
-var MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/mongoHeadlines'
-
-mongoose.connect(MONGODB_URI)
+// Connect to the Mongo DB
+mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
 
 
-///////////////////////////////////
 
-
-var db = mongojs(databaseUrl, collections);
-
-db.on("error", function (error) {
-    console.log("Database Error:", error);
-});
 
 
 app.get("/", function (req, res) {
@@ -60,8 +88,8 @@ app.get("/all", function (req, res) {
 })
 
 app.get("/reset", function (req, res) {
-    db.scrapeAnime.drop()
-    res.send("reset");
+    db.scrapeAnime.remove()
+    res.send("database reset");
 });
 
 
@@ -80,26 +108,34 @@ app.get("/scrape", function (req, res) {
 
         // searches each movie-preview class
         $('.movie-preview').each(function (i, element) {
-            let newAnime = {
-                // gets title
-                title: $(element).find('.movie-title').children('a').attr('title'),
-                // gets story
-                story: $(element).find('.story').text(),
-                // gets poster 
-                poster: $(element).find('img').attr('src'),
-                // gets link
-                link: $(element).find('.movie-poster').children('a').attr('href'),
-            };
-            //posts to scrapeAnime db
-            db.scrapeAnime.insert({
-                newAnime: newAnime
-            })
-        });
-    });
+            var newAnime = {}
+            // gets title
+            newAnime.title = $(this).find('.movie-title').children('a').attr('title');
+            // gets story
+            newAnime.story = $(this).find('.story').text();
+            // gets poster 
+            newAnime.poster = $(this).find('img').attr('src');
+            // gets link
+            newAnime.link = $(this).find('.movie-poster').children('a').attr('href');
 
+            //posts to scrapeAnime db
+            db.scrapeAnime.create(newAnime)
+                .then(function (dbAnime) {
+                    // View the added result in the console
+                    console.log(dbAnime);
+                })
+                .catch(function (err) {
+                    // If an error occurred, log it
+                    console.log(err);
+                });
+        });
+    })
     res.send("Scrape Complete");
-});
+})
+
 
 app.listen(PORT, function () {
     console.log("App running on port 3000!");
-});
+})
+
+

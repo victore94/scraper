@@ -4,8 +4,7 @@ function displayResults(scrapeAnime) {
 
     // Then, for each entry of that json...
     scrapeAnime.forEach(function (data) {
-        let anime = data.newAnime
-
+        let anime = data
         // Append each of the anime's properties to the table
         var tr = $("<tr>").append(
             $("<td>").text(anime.title),
@@ -19,11 +18,24 @@ function displayResults(scrapeAnime) {
 }
 
 
+
 $('#reset').on('click', () => {
-    $.get("/reset", function (req, res) {
-        db.scrapeAnime.drop()
-        res.send("reset");
-    });
+    console.log('clicked', 'reset')
+    $.ajax({
+        method: "GET",
+        url: "/reset"
+    })
+
+    // $("#anime").empty();
+})
+
+$('#scrape').on('click', () => {
+    console.log('scrape')
+    $.ajax({
+        method: "GET",
+        url: "/scrape"
+    })
+
 })
 
 
