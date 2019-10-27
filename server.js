@@ -21,11 +21,13 @@ app.use(express.json());
 app.use(express.static("public"));
 
 
-mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
+// mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
 
 
 
+var MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost/mongoHeadlines'
 
+mongoose.connect(MONGODB_URI)
 
 app.get("/", function (req, res) {
     res.send("Hello world");
@@ -43,8 +45,15 @@ app.get("/all", function (req, res) {
 })
 
 app.get("/reset", function (req, res) {
-    db.scrapeAnime.remove()
-    res.send("database reset");
+    db.scrapeAnime.drop(newAnime)
+        .then(function (dropAnime) {
+            // View the added result in the console
+            console.log(dropAnime);
+        })
+        .catch(function (err) {
+            // If an error occurred, log it
+            console.log(err);
+        });
 });
 
 
